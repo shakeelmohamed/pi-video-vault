@@ -3,7 +3,7 @@ var router = express.Router();
 var fs = require('fs');
 var path = require('path');
 
-var mediaPath = path.join(__dirname, "..", "public", "media");
+var mediaPath = process.env["RPI_MEDIA"] || path.join(__dirname, "..", "public", "media");
 var videoFormats = ["mp4", "webm", "ogg"];
 
 function getVideoFiles() {
@@ -14,7 +14,7 @@ function getVideoFiles() {
         if (files[f].indexOf(videoFormats[v]) === (files[f].length - 3)) {
             videoFiles.push({
                 format: videoFormats[v],
-                path: path.basename(mediaPath) + "/" + files[f]
+                path: encodeURIComponent(path.basename(mediaPath)) + "/" + encodeURIComponent(files[f])
             });
             break;
         }

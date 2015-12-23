@@ -8,7 +8,7 @@ block content
         each videoFile in videoFiles
             .listItem
                 h3 #{videoFile.fileName}
-                img.thumbnail(src="#{videoFile.thumbnailPath}" alt="Thumbnail for #{videoFile.fileName}")
+                //img.thumbnail(src="#{videoFile.thumbnailPath}" alt="Thumbnail for #{videoFile.fileName}")
         //- TODO; refactor into a watch view
         //- video(controls)
         //-   source(src="#{videoFile.path}" type="video/#{videoFile.format}")

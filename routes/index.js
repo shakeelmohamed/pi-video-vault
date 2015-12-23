@@ -34,7 +34,7 @@ function getVideoFiles() {
               videoFiles.push({
                   format: videoFormats[v],
                   path: encodeURIComponent(path.basename(mediaPath)) + "/" + encodeURIComponent(files[f]),
-                  thumbnailPath: encodeURIComponent(path.basename(thumbPath)) + "/" + encodeURIComponent(thumb),
+                  //thumbnailPath: encodeURIComponent(path.basename(thumbPath)) + "/" + encodeURIComponent(thumb),
                   fileName: path.basename(files[f], path.extname(files[f]))
               });
               console.log(videoFiles);

@@ -2,25 +2,11 @@ var express = require('express');
 var router = express.Router();
 var fs = require('fs');
 var path = require('path');
-var ffmpeg = require('fluent-ffmpeg');
 
 var videoFormats = ["mp4", "webm", "ogg"];
 
-var mediaPath = path.join(__dirname, "..", "public", "media");
-var thumbPath = path.join(mediaPath, "..", "thumbnails");
-
-function makeThumbnail(filePath) {
-  var ret = path.basename(filePath) + ".png";
-  var proc = ffmpeg(filePath)
-    .on('end', function(files) {
-      console.log('screenshots were saved.');
-    })
-    .on('error', function(err) {
-      console.log('an error happened: ' + err.message);
-    })
-    .takeScreenshots({ count: 1, timemarks: [ '2' ], filename: ret}, thumbPath);
-  return ret;
-}
+var _media = "media";
+var mediaPath = path.join(__dirname, "..", "public", _media);
 
 function getVideoFiles() {
   var videoFiles = [];
@@ -30,14 +16,10 @@ function getVideoFiles() {
     for (var f in files) {
       for (var v in videoFormats) {
           if (path.extname(files[f]) === ("." + videoFormats[v])) {
-              var thumb = makeThumbnail(path.join(mediaPath, files[f]));
               videoFiles.push({
-                  format: videoFormats[v],
-                  path: encodeURIComponent(path.basename(mediaPath)) + "/" + encodeURIComponent(files[f]),
-                  //thumbnailPath: encodeURIComponent(path.basename(thumbPath)) + "/" + encodeURIComponent(thumb),
-                  fileName: path.basename(files[f], path.extname(files[f]))
+                  fileName: path.basename(files[f], path.extname(files[f])),
+                  watchPath: encodeURIComponent(files[f])
               });
-              console.log(videoFiles);
               break;
           }
       }    
@@ -46,12 +28,34 @@ function getVideoFiles() {
   return videoFiles;
 }
 
+function lookupVideo(id) {
+  var ret = {};
+  var filepath = path.join(mediaPath, decodeURIComponent(id));
+  if (id && fs.statSync(filepath).isFile()) {
+    ret.format = path.extname(filepath).replace(".", "");
+    ret.path = "../" + _media + "/" + encodeURIComponent(id);
+    ret.title = path.basename(filepath, path.extname(filepath));
+  }
+  return ret;
+}
+
 /* GET home page. */
 
 router.get('/', function(req, res) {
   var videoFiles = getVideoFiles();
 
-  res.render('index', { title: 'Raspberry Media Express', videoFiles: videoFiles });
+  res.render('index', { title: 'Raspberry Media Express', videos: videoFiles });
+});
+
+/* GET /watch page, parsing the v querystring parameter. */
+router.get('/watch', function (req, res, next) {
+  // Fall through to the error route?
+  if (req.query) {
+    res.render('watch', lookupVideo(req.query.v));
+  }
+  else {
+    next();
+  }
 });
 
 module.exports = router;

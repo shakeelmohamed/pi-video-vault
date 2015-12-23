@@ -1,0 +1,8 @@
+extends layout
+
+block content
+    h2
+        a(href="../") Back to Media Library
+    h1 #{title}
+    video#player(controls)
+        source(src="#{path}" type="video/#{format}")

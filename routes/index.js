@@ -44,7 +44,7 @@ function lookupVideo(id) {
 router.get('/', function(req, res) {
   var videoFiles = getVideoFiles();
 
-  res.render('index', { title: 'Raspberry Media Express', videos: videoFiles });
+  res.render('index', { title: 'Pi Video Vault', videos: videoFiles });
 });
 
 /* GET /watch page, parsing the v querystring parameter. */

@@ -9,7 +9,7 @@ RUN cd /src; npm install --production
 CMD ["npm", "start"]
 
 ENV RPI_MEDIA="/media"
-EVNT PORT=80
+ENV PORT=80
 VOLUME ${RPI_MEDIA}
 
 RUN ln -s ${RPI_MEDIA} /src/public/media
